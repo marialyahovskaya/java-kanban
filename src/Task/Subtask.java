@@ -1,8 +1,10 @@
+package Task;
+
 import java.util.Objects;
 
 public class Subtask extends Task {
 
-    private int epicId;
+    private final int epicId;
 
     public Subtask(int id, int epicId, String title, String description, String status) {
         super(id, title, description, status);

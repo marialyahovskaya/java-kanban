@@ -1,9 +1,11 @@
+import Task.*;
+
 public class Main {
 
     public static void main(String[] args) {
         TaskManager manager = new TaskManager();
 
-        Task task1 = 
+        Task task1 =
                 new Task(0, "Посадить картошку", "Квадратно-гнездовой посев картофеля", "NEW");
         int task1Id = manager.addTask(task1);
 
