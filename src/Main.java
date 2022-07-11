@@ -2,6 +2,8 @@ import manager.Managers;
 import manager.TaskManager;
 import task.*;
 
+import java.util.List;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -84,14 +86,39 @@ public class Main {
         manager.getTask(task3Id);
         manager.getTask(task4Id);
         manager.getEpic(epic1Id);
+        manager.getTask(task3Id);
+        manager.getTask(task4Id);
         manager.getEpic(epic2Id);
         manager.getEpic(epic3Id);
         manager.getSubtask(subtask2Id);
         manager.getSubtask(subtask4Id);
+        manager.getEpic(epic3Id);
         manager.getSubtask(subtask5Id);
         manager.getSubtask(subtask6Id);
+        manager.getTask(task4Id);
+        manager.getSubtask(subtask2Id);
 
-        System.out.println("------------------------------");
-        System.out.println(manager.getHistory());
+        // Ожидается, что в истории не будет повторов
+        System.out.println("\n----- 1 ------------------------------");
+        List<Task> history = manager.getHistory();
+        for(Task t : history) {
+            System.out.println(t.getId() + " - " + t.getClass() + " - " + t.getTitle());
+        }
+
+        manager.deleteTask(task4Id);
+        // Ожидается, что в истории не будет задачи "Постирать"
+        System.out.println("\n----- 2 ------------------------------");
+        history = manager.getHistory();
+        for(Task t : history) {
+            System.out.println(t.getId() + " - " + t.getClass() + " - " + t.getTitle());
+        }
+
+        manager.deleteEpic(epic3Id);
+        // Ожидается, что в истории не будет эпика "Ремонт" и его подзадач
+        System.out.println("\n----- 3 ------------------------------");
+        history = manager.getHistory();
+        for(Task t : history) {
+            System.out.println(t.getId() + " - " + t.getClass() + " - " + t.getTitle());
+        }
     }
 }
