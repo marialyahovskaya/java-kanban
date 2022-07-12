@@ -10,10 +10,8 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     public Node head;
     public Node tail;
-    private int size = 0;
 
-    // private final LinkedList<Task> history = new LinkedList<>();
-    private final HashMap<Integer, Node> index = new HashMap<>();
+    private final HashMap<Integer, Node> nodes = new HashMap<>();
 
     private Node linkLast(Task task) {
         final Node oldTail = tail;
@@ -24,7 +22,6 @@ public class InMemoryHistoryManager implements HistoryManager {
         } else {
             oldTail.next = newNode;
         }
-        size++;
         return newNode;
     }
 
@@ -39,21 +36,20 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     public void add(Task task) {
-        if (index.containsKey(task.getId())) {
+        if (nodes.containsKey(task.getId())) {
             remove(task.getId());
         }
         Node newNode = linkLast(task);
-        index.put(task.getId(), newNode);
+        nodes.put(task.getId(), newNode);
     }
 
     public void remove(int id) {
-        Node nodeToRemove = index.get(id);
+        Node nodeToRemove = nodes.get(id);
         if (nodeToRemove == null) {
             return;
         }
         removeNode(nodeToRemove);
-        size--;
-        index.remove(id);
+        nodes.remove(id);
     }
 
     private void removeNode(Node nodeToRemove) {
@@ -76,17 +72,17 @@ public class InMemoryHistoryManager implements HistoryManager {
     public List<Task> getHistory() {
         return getTasks();
     }
-}
 
-class Node {
+    private static class Node {
 
-    public Task data;
-    public Node prev;
-    public Node next;
+        private Task data;
+        private Node prev;
+        private Node next;
 
-    public Node(Node prev, Task data, Node next) {
-        this.data = data;
-        this.prev = prev;
-        this.next = next;
+        public Node(Node prev, Task data, Node next) {
+            this.data = data;
+            this.prev = prev;
+            this.next = next;
+        }
     }
 }
