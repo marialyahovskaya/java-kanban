@@ -4,16 +4,18 @@ import java.util.Objects;
 
 public class Task {
 
-    protected int id;
+    protected Integer id;
     protected String title;
     protected String description;
     protected TaskStatus status;
+    protected TaskType type;
 
-    public Task(int id, String title, String description, TaskStatus status) {
+    public Task(Integer id, String title, String description, TaskStatus status) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.status = status;
+        this.type = TaskType.TASK;
     }
 
     public String getTitle() {
@@ -28,8 +30,12 @@ public class Task {
         return status;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
+    }
+
+    public TaskType getType() {
+        return type;
     }
 
     public void setId(int id) {

@@ -1,5 +1,6 @@
-package manager;
+package manager.memory;
 
+import manager.HistoryManager;
 import task.Task;
 
 import java.util.ArrayList;
@@ -8,8 +9,8 @@ import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
-    public Node head;
-    public Node tail;
+    private Node head;
+    private Node tail;
 
     private final HashMap<Integer, Node> nodes = new HashMap<>();
 

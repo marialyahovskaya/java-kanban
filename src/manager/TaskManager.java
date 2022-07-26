@@ -21,8 +21,6 @@ public interface TaskManager {
 
     void updateTask(Task task);
 
-    int addEpic(Epic epic);
-
     Epic getEpic(int id);
 
     Collection<Epic> getEpics();
@@ -34,8 +32,6 @@ public interface TaskManager {
     void updateEpic(Epic epic);
 
     ArrayList<Subtask> getEpicSubtasks(int epicId);
-
-    int addSubtask(Subtask subtask);
 
     Subtask getSubtask(int id);
 
