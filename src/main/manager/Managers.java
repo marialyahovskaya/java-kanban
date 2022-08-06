@@ -1,9 +1,8 @@
 package manager;
 
-import manager.file.FileBackedTasksManager;
+import manager.file.FileBackedTaskManager;
 import manager.file.ManagerLoadException;
 import manager.memory.InMemoryHistoryManager;
-import manager.memory.InMemoryTaskManager;
 
 import java.io.File;
 
@@ -14,7 +13,7 @@ public final class Managers {
     public static TaskManager getDefault() {
         try {
             TaskManager manager;
-            manager = FileBackedTasksManager.loadFromFile(new File(DB_FILENAME));
+            manager = FileBackedTaskManager.loadFromFile(new File(DB_FILENAME));
             return manager;
         } catch (ManagerLoadException e) {
             System.out.println(e.getMessage());

@@ -13,10 +13,10 @@ import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.util.List;
 
-public class FileBackedTasksManager extends InMemoryTaskManager implements TaskManager {
+public class FileBackedTaskManager extends InMemoryTaskManager implements TaskManager {
     private final File file;
 
-    private FileBackedTasksManager(File file) {
+    private FileBackedTaskManager(File file) {
         this.file = file;
     }
 
@@ -28,8 +28,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         }
     }
 
-    public static FileBackedTasksManager loadFromFile(File file) throws ManagerLoadException {
-        final FileBackedTasksManager taskManager = new FileBackedTasksManager(file);
+    public static FileBackedTaskManager loadFromFile(File file) throws ManagerLoadException {
+        final FileBackedTaskManager taskManager = new FileBackedTaskManager(file);
 
         if (file.exists()) {
             try {
@@ -177,8 +177,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     }
 
     @Override
-    public void updateSubtask(Subtask subtask) {
-        super.updateSubtask(subtask);
+    public void updateSubtask(Subtask st) {
+        super.updateSubtask(st);
         try {
             save();
         } catch (ManagerSaveException e) {
