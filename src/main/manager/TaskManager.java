@@ -9,7 +9,7 @@ import java.util.List;
 public interface TaskManager {
     List<Task> getHistory();
 
-    int addTask(Task task);
+    int addTask(Task task) throws StartTimeOverlapException;
 
     Task getTask(int id);
 
@@ -19,7 +19,7 @@ public interface TaskManager {
 
     void deleteTasks();
 
-    void updateTask(Task task);
+    void updateTask(Task task) throws StartTimeOverlapException;
 
     Epic getEpic(int id);
 
@@ -41,7 +41,7 @@ public interface TaskManager {
 
     void deleteSubtask(int id);
 
-    void updateSubtask(Subtask subtask);
+    void updateSubtask(Subtask subtask) throws StartTimeOverlapException;
 
     List<Task> getPrioritizedTasks();
 }

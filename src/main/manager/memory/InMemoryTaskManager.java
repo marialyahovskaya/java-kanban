@@ -2,10 +2,14 @@ package manager.memory;
 
 import manager.HistoryManager;
 import manager.Managers;
+import manager.StartTimeOverlapException;
 import manager.TaskManager;
 import task.*;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
+import java.util.function.Predicate;
 
 public class InMemoryTaskManager implements TaskManager {
 
@@ -19,6 +23,19 @@ public class InMemoryTaskManager implements TaskManager {
 
     protected int nextId = 0;
 
+    protected Predicate<Task> timeOverlappingValidator = task -> {
+        for (Task t : getPrioritizedTasks()) {
+            // не должно быть пересечений длительности выполнения кроме случая сверки задачи с самой собой
+            if (LocalDateTime.of(t.getStartTime(), LocalTime.of(0, 0)).isBefore(task.getEndTime()) &&
+                    LocalDateTime.of(task.getStartTime(), LocalTime.of(0, 0)).isBefore(t.getEndTime()) &&
+                    !t.getId().equals(task.getId()))
+            {
+                return false;
+            }
+        }
+        return true;
+    };
+
     private int generateId() {
         return ++nextId;
     }
@@ -29,7 +46,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public int addTask(Task task) {
+    public int addTask(Task task) throws StartTimeOverlapException {
         int taskId;
         if (task.getId() == null) {
             taskId = generateId();
@@ -38,11 +55,14 @@ public class InMemoryTaskManager implements TaskManager {
             taskId = task.getId();
         }
 
+        if (task.getType() == TaskType.TASK || task.getType() == TaskType.SUBTASK) {
+            if (!timeOverlappingValidator.test(task))
+                throw new StartTimeOverlapException("Временной слот для создаваемой задачи уже занят");
+            priorityIndex.add(task);
+        }
+
         switch (task.getType()) {
-            case TASK -> {
-                tasks.put(taskId, task);
-                priorityIndex.add(task);
-            }
+            case TASK -> tasks.put(taskId, task);
             case EPIC -> epics.put(taskId, (Epic) task);
             case SUBTASK -> {
                 Subtask subtask = (Subtask) task;
@@ -51,7 +71,7 @@ public class InMemoryTaskManager implements TaskManager {
                 Epic epic = epics.get(epicId);
                 ArrayList<Subtask> epicSubtasks = epic.getSubtasks();
                 epicSubtasks.add(subtask);
-                priorityIndex.add(task);
+                epic.recalculateData();
             }
         }
         return taskId;
@@ -164,6 +184,9 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteTask(int id) {
         Task task = tasks.get(id);
+        if (task == null)
+            return;
+
         priorityIndex.remove(task);
         tasks.remove(id);
         history.remove(id);
@@ -194,6 +217,7 @@ public class InMemoryTaskManager implements TaskManager {
         Epic epic = epics.get(epicId);
         ArrayList<Subtask> epicSubtasks = epic.getSubtasks();
         epicSubtasks.remove(subtask);
+        epic.recalculateData();
 
         priorityIndex.remove(subtask);
         subtasks.remove(id);
@@ -201,20 +225,32 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void updateTask(Task task) {
-        if (tasks.containsKey(task.getId())) {
-            Task oldTask = tasks.get(task.getId());
-            priorityIndex.remove(oldTask);
-            tasks.put(task.getId(), task);
-            priorityIndex.add(task);
+    public void updateTask(Task task) throws StartTimeOverlapException {
+        if (!tasks.containsKey(task.getId())) {
+            return;
         }
+
+        if (!timeOverlappingValidator.test(task)) {
+            throw new StartTimeOverlapException("Указанный новый временной слот задачи уже занят");
+        }
+
+        priorityIndex.add(task);
+        Task oldTask = tasks.get(task.getId());
+        priorityIndex.remove(oldTask);
+        tasks.put(task.getId(), task);
+        priorityIndex.add(task);
     }
 
     @Override
-    public void updateSubtask(Subtask st) {
+    public void updateSubtask(Subtask st) throws StartTimeOverlapException {
         if (!subtasks.containsKey(st.getId())) {
             return;
         }
+
+        if (!timeOverlappingValidator.test(st)) {
+            throw new StartTimeOverlapException("Указанный новый временной слот подзадачи уже занят");
+        }
+
         Subtask oldSubtask = subtasks.get(st.getId());
 
         // epicId should not be changed/updated
@@ -225,6 +261,9 @@ public class InMemoryTaskManager implements TaskManager {
         priorityIndex.remove(oldSubtask);
         priorityIndex.add(st);
         subtasks.put(st.getId(), st);
+
+        Epic epic = epics.get(st.getEpicId());
+        epic.recalculateData();
     }
 
     @Override

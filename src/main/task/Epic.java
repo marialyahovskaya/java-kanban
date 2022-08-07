@@ -19,22 +19,19 @@ public class Epic extends Task {
         return subtasks;
     }
 
-    @Override
-    public int getDuration() {
-        return subtasks.stream()
+    public void recalculateData() {
+        duration = subtasks.stream()
                 .mapToInt(Task::getDuration)
                 .sum();
-    }
 
-    @Override
-    public LocalDate getStartTime() {
-        if (subtasks.size() == 0) return startTime;
-        return subtasks.stream()
-                .map(Task::getStartTime)
-                .reduce(
-                        subtasks.get(0).getStartTime(),
-                        (acc, cv) -> cv.isBefore(acc) ? cv : acc
-                );
+        if (subtasks.size() > 0) {
+            startTime = subtasks.stream()
+                    .map(Task::getStartTime)
+                    .reduce(
+                            subtasks.get(0).getStartTime(),
+                            (acc, cv) -> cv.isBefore(acc) ? cv : acc
+                    );
+        }
     }
 
     @Override

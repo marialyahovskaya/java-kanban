@@ -32,7 +32,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     public void shouldHaveNewEpicStatusWhenAllSubtasksHaveNewStatus() {
         int epicId = manager.addTask(new Epic(null, "title", "description", TaskStatus.DONE, LocalDate.of(2022, 8, 7)));
         manager.addTask(new Subtask(null, epicId, "title", "description", TaskStatus.NEW, 10, LocalDate.of(2022, 8, 7)));
-        manager.addTask(new Subtask(null, epicId, "title2", "description2", TaskStatus.NEW, 10, LocalDate.of(2022, 8, 7)));
+        manager.addTask(new Subtask(null, epicId, "title2", "description2", TaskStatus.NEW, 10, LocalDate.of(2022, 8, 8)));
         assertEquals(TaskStatus.NEW, manager.getEpic(epicId).getStatus(), "Если все подзадачи NEW, статус эпика тоже должен быть NEW");
     }
 
@@ -40,7 +40,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     public void shouldHaveDoneEpicStatusWhenAllSubtasksHaveDoneStatus() {
         int epicId = manager.addTask(new Epic(null, "title", "description", TaskStatus.NEW, LocalDate.of(2022, 8, 7)));
         manager.addTask(new Subtask(null, epicId, "title", "description", TaskStatus.DONE, 10, LocalDate.of(2022, 8, 7)));
-        manager.addTask(new Subtask(null, epicId, "title2", "description2", TaskStatus.DONE, 10, LocalDate.of(2022, 8, 7)));
+        manager.addTask(new Subtask(null, epicId, "title2", "description2", TaskStatus.DONE, 10, LocalDate.of(2022, 8, 8)));
         assertEquals(TaskStatus.DONE, manager.getEpic(epicId).getStatus(), "Если все подзадачи DONE, статус эпика тоже должен быть DONE");
     }
 
@@ -48,7 +48,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     public void shouldHaveInProgressEpicStatusWhenSubtasksHaveNewAndDoneStatuses() {
         int epicId = manager.addTask(new Epic(null, "title", "description", TaskStatus.NEW, LocalDate.of(2022, 8, 7)));
         manager.addTask(new Subtask(null, epicId, "title", "description", TaskStatus.NEW, 10, LocalDate.of(2022, 8, 7)));
-        manager.addTask(new Subtask(null, epicId, "title2", "description2", TaskStatus.DONE, 10, LocalDate.of(2022, 8, 7)));
+        manager.addTask(new Subtask(null, epicId, "title2", "description2", TaskStatus.DONE, 10, LocalDate.of(2022, 8, 8)));
         assertEquals(TaskStatus.IN_PROGRESS, manager.getEpic(epicId).getStatus(), "Статус должен быть IN_PROGRESS");
     }
 
@@ -56,7 +56,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     public void shouldHaveInProgressEpicStatusWhenAllSubtasksHaveInProgressStatus() {
         int epicId = manager.addTask(new Epic(null, "title", "description", TaskStatus.NEW, LocalDate.of(2022, 8, 7)));
         manager.addTask(new Subtask(null, epicId, "title", "description", TaskStatus.IN_PROGRESS, 10, LocalDate.of(2022, 8, 7)));
-        manager.addTask(new Subtask(null, epicId, "title2", "description2", TaskStatus.IN_PROGRESS, 10, LocalDate.of(2022, 8, 7)));
+        manager.addTask(new Subtask(null, epicId, "title2", "description2", TaskStatus.IN_PROGRESS, 10, LocalDate.of(2022, 8, 8)));
         assertEquals(TaskStatus.IN_PROGRESS, manager.getEpic(epicId).getStatus(), "Статус должен быть IN_PROGRESS");
     }
 
@@ -126,7 +126,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     public void shouldGetTasks() {
         manager.addTask(new Task(null, "помыть посуду", "мыть всё подряд долго", TaskStatus.NEW, 10, LocalDate.of(2022, 8, 7)));
-        manager.addTask(new Task(null, "вытереть посуду", "вытирать всё подряд долго", TaskStatus.NEW, 10, LocalDate.of(2022, 8, 7)));
+        manager.addTask(new Task(null, "вытереть посуду", "вытирать всё подряд долго", TaskStatus.NEW, 10, LocalDate.of(2022, 8, 8)));
         assertEquals(2, manager.getTasks().size());
     }
 
@@ -155,7 +155,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
         int epicId2 = manager.addTask(new Epic(null, "помыть", "мыть всё подряд долго", TaskStatus.NEW, LocalDate.of(2022, 8, 7)));
         manager.addTask(new Subtask(null, epicId2, "помыть кота",
-                "помыть кота специальным шампунем", TaskStatus.IN_PROGRESS, 10, LocalDate.of(2022, 8, 7)));
+                "помыть кота специальным шампунем", TaskStatus.IN_PROGRESS, 10, LocalDate.of(2022, 8, 8)));
 
         assertEquals(2, manager.getSubtasks().size());
         for (Subtask subtask : manager.getSubtasks()) {
@@ -171,8 +171,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     public void shouldDeleteTasks() {
         manager.addTask(new Task(null, "помыть посуду", "мыть всё подряд долго", TaskStatus.NEW, 10, LocalDate.of(2022, 8, 7)));
-        manager.addTask(new Task(null, "погладить", "гладить всё подряд долго", TaskStatus.NEW, 10, LocalDate.of(2022, 8, 7)));
-        manager.addTask(new Task(null, "приготовить еду", "проготовить супы котлеты", TaskStatus.NEW, 10, LocalDate.of(2022, 8, 7)));
+        manager.addTask(new Task(null, "погладить", "гладить всё подряд долго", TaskStatus.NEW, 10, LocalDate.of(2022, 8, 8)));
+        manager.addTask(new Task(null, "приготовить еду", "проготовить супы котлеты", TaskStatus.NEW, 10, LocalDate.of(2022, 8, 9)));
         manager.deleteTasks();
         assertEquals(0, manager.getTasks().size());
     }
@@ -203,8 +203,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     public void shouldDeleteSubtasks() {
         int epicId = manager.addTask(new Epic(null, "title", "description", TaskStatus.NEW, LocalDate.of(2022, 8, 7)));
         manager.addTask(new Subtask(null, epicId, "title", "description", TaskStatus.NEW, 10, LocalDate.of(2022, 8, 7)));
-        manager.addTask(new Subtask(null, epicId, "title2", "description2", TaskStatus.DONE, 10, LocalDate.of(2022, 8, 7)));
-        manager.addTask(new Subtask(null, epicId, "title3", "description3", TaskStatus.DONE, 10, LocalDate.of(2022, 8, 7)));
+        manager.addTask(new Subtask(null, epicId, "title2", "description2", TaskStatus.DONE, 10, LocalDate.of(2022, 8, 8)));
+        manager.addTask(new Subtask(null, epicId, "title3", "description3", TaskStatus.DONE, 10, LocalDate.of(2022, 8, 9)));
         manager.deleteSubtasks();
         assertEquals(0, manager.getSubtasks().size());
 
@@ -221,7 +221,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     public void shouldDeleteTask() {
         int taskId = manager.addTask(new Task(null, "помыть посуду", "мыть всё подряд долго", TaskStatus.NEW, 10, LocalDate.of(2022, 8, 7)));
-        int taskId2 = manager.addTask(new Task(null, "погладить", "гладить всё подряд долго", TaskStatus.NEW, 10, LocalDate.of(2022, 8, 7)));
+        int taskId2 = manager.addTask(new Task(null, "погладить", "гладить всё подряд долго", TaskStatus.NEW, 10, LocalDate.of(2022, 8, 8)));
         manager.deleteTask(taskId2);
         Task task = manager.getTask(taskId);
 
@@ -241,7 +241,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         manager.addTask(new Subtask(null, epicId2, "погладить кота",
                 "погладить кота в специальной перчатке для вычесывания", TaskStatus.IN_PROGRESS, 10, LocalDate.of(2022, 8, 7)));
         manager.addTask(new Subtask(null, epicId2, "помыть кота",
-                "помыть кота специальным шампунем", TaskStatus.IN_PROGRESS, 10, LocalDate.of(2022, 8, 7)));
+                "помыть кота специальным шампунем", TaskStatus.IN_PROGRESS, 10, LocalDate.of(2022, 8, 8)));
 
         manager.deleteEpic((epicId2));
         Epic epic = manager.getEpic(epicId);
@@ -262,7 +262,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
                 "погладить кота в специальной перчатке для вычесывания", TaskStatus.IN_PROGRESS, 10, LocalDate.of(2022, 8, 7)));
         int epicId2 = manager.addTask(new Epic(null, "помыть", "мыть всё подряд долго", TaskStatus.NEW, LocalDate.of(2022, 8, 7)));
         int subtaskId2 = manager.addTask(new Subtask(null, epicId2, "помыть кота",
-                "помыть кота специальным шампунем", TaskStatus.IN_PROGRESS, 10, LocalDate.of(2022, 8, 7)));
+                "помыть кота специальным шампунем", TaskStatus.IN_PROGRESS, 10, LocalDate.of(2022, 8, 8)));
         manager.deleteSubtask(subtaskId2);
         Subtask subtask = manager.getSubtask(subtaskId);
 
@@ -407,7 +407,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     public void shouldGetEpicSubtasks() {
         int epicId = manager.addTask(new Epic(null, "title", "description", TaskStatus.DONE, LocalDate.of(2022, 8, 7)));
         manager.addTask(new Subtask(null, epicId, "title", "description", TaskStatus.NEW, 10, LocalDate.of(2022, 8, 7)));
-        manager.addTask(new Subtask(null, epicId, "title2", "description2", TaskStatus.NEW, 10, LocalDate.of(2022, 8, 7)));
+        manager.addTask(new Subtask(null, epicId, "title2", "description2", TaskStatus.NEW, 10, LocalDate.of(2022, 8, 8)));
         List<Subtask> subtasks = manager.getEpicSubtasks(epicId);
         assertEquals(2, subtasks.size());
     }
@@ -523,4 +523,51 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(task2, prioritizedTasks.get(3), "Вывод в порядке приоритета");
         assertEquals(subtask3, prioritizedTasks.get(4), "Вывод в порядке приоритета");
     }
+
+    @Test
+    public void shouldAddTaskWhenItEndsBeforeOtherTaskStartTime() {
+        manager.addTask(new Task(null, "t1", "d1", TaskStatus.NEW, 10, LocalDate.of(2022, 1, 2)));
+        manager.addTask(new Task(null, "t2", "d2", TaskStatus.NEW, 10, LocalDate.of(2022, 1, 1)));
+        assertEquals(2, manager.getTasks().size());
+    }
+
+    @Test
+    public void shouldAddTaskWhenItStartsAfterOtherTaskEnds() {
+        manager.addTask(new Task(null, "t1", "d1", TaskStatus.NEW, 10, LocalDate.of(2022, 1, 1)));
+        manager.addTask(new Task(null, "t2", "d2", TaskStatus.NEW, 10, LocalDate.of(2022, 1, 2)));
+        assertEquals(2, manager.getTasks().size());
+    }
+
+    @Test
+    public void shouldThrowExceptionWhenNewTaskEndsAfterOtherTaskStarts() {
+        assertThrows(StartTimeOverlapException.class, ()-> {
+            manager.addTask(new Task(null, "t1", "d1", TaskStatus.NEW, 180, LocalDate.of(2022, 1, 2)));
+            manager.addTask(new Task(null, "t2", "d2", TaskStatus.NEW, 60*24 + 30, LocalDate.of(2022, 1, 1)));
+        });
+    }
+
+    @Test
+    public void shouldThrowExceptionWhenNewTaskStartsAfterOtherTaskEnds() {
+        assertThrows(StartTimeOverlapException.class, ()-> {
+            manager.addTask(new Task(null, "t1", "d1", TaskStatus.NEW, 60*24 + 30, LocalDate.of(2022, 1, 1)));
+            manager.addTask(new Task(null, "t2", "d2", TaskStatus.NEW, 180, LocalDate.of(2022, 1, 2)));
+        });
+    }
+
+    @Test
+    public void shouldThrowExceptionWhenNewTaskExecutionPeriodIsInsideOtherTaskExecutionPeriod() {
+        assertThrows(StartTimeOverlapException.class, ()-> {
+            manager.addTask(new Task(null, "t1", "d1", TaskStatus.NEW, 60*72, LocalDate.of(2022, 1, 1)));
+            manager.addTask(new Task(null, "t2", "d2", TaskStatus.NEW, 180, LocalDate.of(2022, 1, 2)));
+        });
+    }
+
+    @Test
+    public void shouldThrowExceptionWhenNewTaskStartTimeEqualsOtherTaskStartTime() {
+        assertThrows(StartTimeOverlapException.class, ()-> {
+            manager.addTask(new Task(null, "t1", "d1", TaskStatus.NEW, 60, LocalDate.of(2022, 1, 1)));
+            manager.addTask(new Task(null, "t2", "d2", TaskStatus.NEW, 180, LocalDate.of(2022, 1, 1)));
+        });
+    }
 }
+
