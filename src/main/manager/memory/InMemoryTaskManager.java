@@ -5,16 +5,15 @@ import manager.Managers;
 import manager.TaskManager;
 import task.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
 
     protected final HashMap<Integer, Task> tasks = new HashMap<>();
     protected final HashMap<Integer, Subtask> subtasks = new HashMap<>();
     protected final HashMap<Integer, Epic> epics = new HashMap<>();
+
+    protected final TreeSet<Task> priorityIndex = new TreeSet<>();
 
     protected final HistoryManager history = Managers.getDefaultHistory();
 
@@ -40,7 +39,10 @@ public class InMemoryTaskManager implements TaskManager {
         }
 
         switch (task.getType()) {
-            case TASK -> tasks.put(taskId, task);
+            case TASK -> {
+                tasks.put(taskId, task);
+                priorityIndex.add(task);
+            }
             case EPIC -> epics.put(taskId, (Epic) task);
             case SUBTASK -> {
                 Subtask subtask = (Subtask) task;
@@ -49,6 +51,7 @@ public class InMemoryTaskManager implements TaskManager {
                 Epic epic = epics.get(epicId);
                 ArrayList<Subtask> epicSubtasks = epic.getSubtasks();
                 epicSubtasks.add(subtask);
+                priorityIndex.add(task);
             }
         }
         return taskId;
@@ -138,6 +141,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteTasks() {
+        tasks.values().stream().forEach(priorityIndex::remove);
         tasks.clear();
     }
 
@@ -149,8 +153,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteSubtasks() {
+        subtasks.values().stream().forEach(priorityIndex::remove);
         subtasks.values().stream()
-                .map(s -> s.getEpicId())
+                .map(Subtask::getEpicId)
                 .distinct()
                 .forEach(id -> epics.get(id).getSubtasks().clear());
         subtasks.clear();
@@ -158,6 +163,8 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteTask(int id) {
+        Task task = tasks.get(id);
+        priorityIndex.remove(task);
         tasks.remove(id);
         history.remove(id);
     }
@@ -169,6 +176,7 @@ public class InMemoryTaskManager implements TaskManager {
             return;
         ArrayList<Subtask> epicSubtasks = epic.getSubtasks();
         for (Subtask subtask : epicSubtasks) {
+            priorityIndex.remove(subtask);
             subtasks.remove(subtask.getId());
             history.remove(subtask.getId());
         }
@@ -181,10 +189,13 @@ public class InMemoryTaskManager implements TaskManager {
         Subtask subtask = subtasks.get(id);
         if (subtask == null)
             return;
+
         int epicId = subtask.getEpicId();
         Epic epic = epics.get(epicId);
         ArrayList<Subtask> epicSubtasks = epic.getSubtasks();
         epicSubtasks.remove(subtask);
+
+        priorityIndex.remove(subtask);
         subtasks.remove(id);
         history.remove(id);
     }
@@ -192,7 +203,10 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateTask(Task task) {
         if (tasks.containsKey(task.getId())) {
+            Task oldTask = tasks.get(task.getId());
+            priorityIndex.remove(oldTask);
             tasks.put(task.getId(), task);
+            priorityIndex.add(task);
         }
     }
 
@@ -208,6 +222,8 @@ public class InMemoryTaskManager implements TaskManager {
             st = new Subtask(st.getId(), oldSubtask.getEpicId(), st.getTitle(), st.getDescription(), st.getStatus(), st.getDuration(), st.getStartTime());
         }
 
+        priorityIndex.remove(oldSubtask);
+        priorityIndex.add(st);
         subtasks.put(st.getId(), st);
     }
 
@@ -226,5 +242,10 @@ public class InMemoryTaskManager implements TaskManager {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public List<Task> getPrioritizedTasks() {
+        return new ArrayList<>(priorityIndex);
     }
 }

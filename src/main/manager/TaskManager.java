@@ -42,4 +42,6 @@ public interface TaskManager {
     void deleteSubtask(int id);
 
     void updateSubtask(Subtask subtask);
+
+    List<Task> getPrioritizedTasks();
 }

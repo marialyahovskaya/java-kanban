@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
 
-public class Task {
+public class Task implements Comparable<Task> {
 
     protected Integer id;
     protected String title;
@@ -78,7 +78,17 @@ public class Task {
     }
 
     public LocalDateTime getEndTime() {
-        return LocalDateTime.of(startTime, LocalTime.of(0,0)).plusMinutes(duration);
+        return LocalDateTime.of(startTime, LocalTime.of(0, 0)).plusMinutes(duration);
+    }
+
+    @Override
+    public int compareTo(Task task) {
+        if (startTime.isBefore(task.getStartTime()))
+            return -1;
+        else if (startTime.isAfter(task.getStartTime()))
+            return 1;
+        else
+            return 0;
     }
 
     @Override
@@ -86,7 +96,8 @@ public class Task {
         if (this == o) return true;
         if (!(o instanceof Task)) return false;
         Task task = (Task) o;
-        return id == task.id && Objects.equals(title, task.title)
+        return Objects.equals(id, task.id)
+                && Objects.equals(title, task.title)
                 && Objects.equals(description, task.description)
                 && Objects.equals(status, task.status)
                 && duration == task.duration
