@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import task.Task;
 import task.TaskStatus;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -14,7 +15,7 @@ public abstract class HistoryManagerTest<T extends HistoryManager> {
 
     @Test
     public void shouldAddTaskToHistory() {
-        Task task = new Task(1, "t", "d", TaskStatus.NEW);
+        Task task = new Task(1, "t", "d", TaskStatus.NEW, 10, LocalDate.of(2022,8,07));
         historyManager.add(task);
         List<Task> history = historyManager.getHistory();
         assertNotNull(history, "История не пустая.");
@@ -30,9 +31,9 @@ public abstract class HistoryManagerTest<T extends HistoryManager> {
 
     @Test
     public void shouldStoreTasksInHistoryInOrder() {
-        historyManager.add(new Task(1, "t1", "d1", TaskStatus.NEW));
-        historyManager.add(new Task(2, "t2", "d2", TaskStatus.NEW));
-        historyManager.add(new Task(3, "t3", "d3", TaskStatus.NEW));
+        historyManager.add(new Task(1, "t1", "d1", TaskStatus.NEW, 10, LocalDate.of(2022,8,07)));
+        historyManager.add(new Task(2, "t2", "d2", TaskStatus.NEW, 10, LocalDate.of(2022,8,07)));
+        historyManager.add(new Task(3, "t3", "d3", TaskStatus.NEW, 10, LocalDate.of(2022,8,07)));
         List<Task> history = historyManager.getHistory();
 
         assertNotNull(history, "История не пустая.");
@@ -44,7 +45,7 @@ public abstract class HistoryManagerTest<T extends HistoryManager> {
 
     @Test
     public void shouldHaveUniqueTaskIds() {
-        Task task = new Task(1, "t", "d", TaskStatus.NEW);
+        Task task = new Task(1, "t", "d", TaskStatus.NEW, 10, LocalDate.of(2022,8,07));
         historyManager.add(task);
         historyManager.add(task);
 
@@ -56,7 +57,7 @@ public abstract class HistoryManagerTest<T extends HistoryManager> {
 
     @Test
     public void shouldHaveEmptyHistoryAfterRemovingSingleEntry() {
-        Task task = new Task(1, "t", "d", TaskStatus.NEW);
+        Task task = new Task(1, "t", "d", TaskStatus.NEW, 10, LocalDate.of(2022,8,07));
         historyManager.add(task);
         historyManager.remove(task.getId());
         List<Task> history = historyManager.getHistory();
@@ -66,9 +67,9 @@ public abstract class HistoryManagerTest<T extends HistoryManager> {
 
     @Test
     public void shouldRemainOrderWhenRemovingFirstHistoryElement() {
-        historyManager.add(new Task(1, "t1", "d1", TaskStatus.NEW));
-        historyManager.add(new Task(2, "t2", "d2", TaskStatus.NEW));
-        historyManager.add(new Task(3, "t3", "d3", TaskStatus.NEW));
+        historyManager.add(new Task(1, "t1", "d1", TaskStatus.NEW, 10, LocalDate.of(2022,8,07)));
+        historyManager.add(new Task(2, "t2", "d2", TaskStatus.NEW, 10, LocalDate.of(2022,8,07)));
+        historyManager.add(new Task(3, "t3", "d3", TaskStatus.NEW, 10, LocalDate.of(2022,8,07)));
         historyManager.remove(1);
         List<Task> history = historyManager.getHistory();
 
@@ -80,9 +81,9 @@ public abstract class HistoryManagerTest<T extends HistoryManager> {
 
     @Test
     public void shouldRemainOrderWhenRemovingMiddleHistoryElement() {
-        historyManager.add(new Task(1, "t1", "d1", TaskStatus.NEW));
-        historyManager.add(new Task(2, "t2", "d2", TaskStatus.NEW));
-        historyManager.add(new Task(3, "t3", "d3", TaskStatus.NEW));
+        historyManager.add(new Task(1, "t1", "d1", TaskStatus.NEW, 10, LocalDate.of(2022,8,07)));
+        historyManager.add(new Task(2, "t2", "d2", TaskStatus.NEW, 10, LocalDate.of(2022,8,07)));
+        historyManager.add(new Task(3, "t3", "d3", TaskStatus.NEW, 10, LocalDate.of(2022,8,07)));
         historyManager.remove(2);
         List<Task> history = historyManager.getHistory();
 
@@ -94,9 +95,9 @@ public abstract class HistoryManagerTest<T extends HistoryManager> {
 
     @Test
     public void shouldRemainOrderWhenRemovingLastHistoryElement() {
-        historyManager.add(new Task(1, "t1", "d1", TaskStatus.NEW));
-        historyManager.add(new Task(2, "t2", "d2", TaskStatus.NEW));
-        historyManager.add(new Task(3, "t3", "d3", TaskStatus.NEW));
+        historyManager.add(new Task(1, "t1", "d1", TaskStatus.NEW, 10, LocalDate.of(2022,8,07)));
+        historyManager.add(new Task(2, "t2", "d2", TaskStatus.NEW, 10, LocalDate.of(2022,8,07)));
+        historyManager.add(new Task(3, "t3", "d3", TaskStatus.NEW, 10, LocalDate.of(2022,8,07)));
         historyManager.remove(3);
         List<Task> history = historyManager.getHistory();
 
@@ -108,9 +109,9 @@ public abstract class HistoryManagerTest<T extends HistoryManager> {
 
     @Test
     public void shouldKeepHistoryWhenTryingToRemoveNonexistentElement() {
-        historyManager.add(new Task(1, "t1", "d1", TaskStatus.NEW));
-        historyManager.add(new Task(2, "t2", "d2", TaskStatus.NEW));
-        historyManager.add(new Task(3, "t3", "d3", TaskStatus.NEW));
+        historyManager.add(new Task(1, "t1", "d1", TaskStatus.NEW, 10, LocalDate.of(2022,8,07)));
+        historyManager.add(new Task(2, "t2", "d2", TaskStatus.NEW, 10, LocalDate.of(2022,8,07)));
+        historyManager.add(new Task(3, "t3", "d3", TaskStatus.NEW, 10, LocalDate.of(2022,8,07)));
         List<Task> history = historyManager.getHistory();
         historyManager.remove(103);
 

@@ -1,7 +1,6 @@
 package manager.file;
 
 import manager.TaskManagerTest;
-import manager.memory.InMemoryTaskManagerTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,6 +10,7 @@ import task.Task;
 import task.TaskStatus;
 
 import java.io.File;
+import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -30,11 +30,11 @@ public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskMan
 
     @Test
     public void shouldSaveAndRestoreAllTypesOfTasksAndStatuses() {
-        manager.addTask(new Task(1, "t1", "task2", TaskStatus.NEW));
-        manager.addTask(new Task(2, "t2", "task2", TaskStatus.IN_PROGRESS));
-        manager.addTask(new Task(3, "t3", "task3", TaskStatus.DONE));
-        manager.addTask(new Epic(4, "e", "epic", TaskStatus.NEW));
-        manager.addTask(new Subtask(5, 4, "s", "subtask", TaskStatus.NEW));
+        manager.addTask(new Task(1, "t1", "task2", TaskStatus.NEW, 10, LocalDate.of(2022,8,7)));
+        manager.addTask(new Task(2, "t2", "task2", TaskStatus.IN_PROGRESS,10, LocalDate.of(2022,8,7)));
+        manager.addTask(new Task(3, "t3", "task3", TaskStatus.DONE,10, LocalDate.of(2022,8,7)));
+        manager.addTask(new Epic(4, "e", "epic", TaskStatus.NEW, LocalDate.of(2022,8,7)));
+        manager.addTask(new Subtask(5, 4, "s", "subtask", TaskStatus.NEW, 10, LocalDate.of(2022,8,7)));
 
         FileBackedTaskManager restoredManager = FileBackedTaskManager.loadFromFile(new File(DB_FILENAME));
         assertEquals(3, restoredManager.getTasks().size(), "Загружены все сохраненные задачи");
@@ -60,11 +60,11 @@ public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskMan
 
     @Test
     public void shouldRestoreFromEmptyFileAfterCreatingAndRemovingAllTasksOneByOne() {
-        manager.addTask(new Task(1, "t1", "task2", TaskStatus.NEW));
-        manager.addTask(new Task(2, "t2", "task2", TaskStatus.IN_PROGRESS));
-        manager.addTask(new Task(3, "t3", "task3", TaskStatus.DONE));
-        manager.addTask(new Epic(4, "e", "epic", TaskStatus.NEW));
-        manager.addTask(new Subtask(5, 4, "s", "subtask", TaskStatus.NEW));
+        manager.addTask(new Task(1, "t1", "task2", TaskStatus.NEW, 10, LocalDate.of(2022,8,7)));
+        manager.addTask(new Task(2, "t2", "task2", TaskStatus.IN_PROGRESS, 10, LocalDate.of(2022,8,7)));
+        manager.addTask(new Task(3, "t3", "task3", TaskStatus.DONE, 10, LocalDate.of(2022,8,7)));
+        manager.addTask(new Epic(4, "e", "epic", TaskStatus.NEW,  LocalDate.of(2022,8,7)));
+        manager.addTask(new Subtask(5, 4, "s", "subtask", TaskStatus.NEW, 10, LocalDate.of(2022,8,7)));
         manager.deleteTask(1);
         manager.deleteTask(2);
         manager.deleteTask(3);
@@ -82,11 +82,11 @@ public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskMan
 
     @Test
     public void shouldRestoreFromEmptyFileAfterCreatingAndClearingAllData() {
-        manager.addTask(new Task(1, "t1", "task2", TaskStatus.NEW));
-        manager.addTask(new Task(2, "t2", "task2", TaskStatus.IN_PROGRESS));
-        manager.addTask(new Task(3, "t3", "task3", TaskStatus.DONE));
-        manager.addTask(new Epic(4, "e", "epic", TaskStatus.NEW));
-        manager.addTask(new Subtask(5, 4, "s", "subtask", TaskStatus.NEW));
+        manager.addTask(new Task(1, "t1", "task2", TaskStatus.NEW, 10, LocalDate.of(2022,8,7)));
+        manager.addTask(new Task(2, "t2", "task2", TaskStatus.IN_PROGRESS, 10, LocalDate.of(2022,8,7)));
+        manager.addTask(new Task(3, "t3", "task3", TaskStatus.DONE, 10, LocalDate.of(2022,8,7)));
+        manager.addTask(new Epic(4, "e", "epic", TaskStatus.NEW,  LocalDate.of(2022,8,7)));
+        manager.addTask(new Subtask(5, 4, "s", "subtask", TaskStatus.NEW, 10, LocalDate.of(2022,8,7)));
         manager.deleteTasks();
         manager.deleteEpics();
 
@@ -101,7 +101,7 @@ public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskMan
 
     @Test
     public void shouldRestoreEpicWithNoSubtasks() {
-        manager.addTask(new Epic(1, "e", "epic", TaskStatus.NEW));
+        manager.addTask(new Epic(1, "e", "epic", TaskStatus.NEW, LocalDate.of(2022,8,7)));
         FileBackedTaskManager restoredManager = FileBackedTaskManager.loadFromFile(new File(DB_FILENAME));
         assertNotNull(restoredManager.getEpics(),"Список эпиков не null");
         assertEquals(manager.getEpic(1), restoredManager.getEpic(1),"Сохраненные данные идентичны загруженным");
@@ -109,9 +109,9 @@ public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskMan
 
     @Test
     public void shouldRestoreEmptyHistory() {
-        manager.addTask(new Task(1, "t1", "task2", TaskStatus.NEW));
-        manager.addTask(new Epic(2, "e", "epic", TaskStatus.NEW));
-        manager.addTask(new Subtask(3, 2, "s", "subtask", TaskStatus.NEW));
+        manager.addTask(new Task(1, "t1", "task2", TaskStatus.NEW, 10, LocalDate.of(2022,8,7)));
+        manager.addTask(new Epic(2, "e", "epic", TaskStatus.NEW,  LocalDate.of(2022,8,7)));
+        manager.addTask(new Subtask(3, 2, "s", "subtask", TaskStatus.NEW, 10, LocalDate.of(2022,8,7)));
         FileBackedTaskManager restoredManager = FileBackedTaskManager.loadFromFile(new File(DB_FILENAME));
         assertNotNull(restoredManager.getHistory(), "История не null");
         assertEquals(0, restoredManager.getHistory().size(), "Пустая история");
@@ -119,11 +119,11 @@ public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskMan
 
     @Test
     public void shouldRestoreHistory() {
-        manager.addTask(new Task(1, "t1", "task2", TaskStatus.NEW));
-        manager.addTask(new Task(2, "t2", "task2", TaskStatus.IN_PROGRESS));
-        manager.addTask(new Task(3, "t3", "task3", TaskStatus.DONE));
-        manager.addTask(new Epic(4, "e", "epic", TaskStatus.NEW));
-        manager.addTask(new Subtask(5, 4, "s", "subtask", TaskStatus.NEW));
+        manager.addTask(new Task(1, "t1", "task2", TaskStatus.NEW, 10, LocalDate.of(2022,8,7)));
+        manager.addTask(new Task(2, "t2", "task2", TaskStatus.IN_PROGRESS, 10, LocalDate.of(2022,8,7)));
+        manager.addTask(new Task(3, "t3", "task3", TaskStatus.DONE, 10, LocalDate.of(2022,8,7)));
+        manager.addTask(new Epic(4, "e", "epic", TaskStatus.NEW,  LocalDate.of(2022,8,7)));
+        manager.addTask(new Subtask(5, 4, "s", "subtask", TaskStatus.NEW, 10, LocalDate.of(2022,8,7)));
 
         manager.getTask(2);
         manager.getTask(3);

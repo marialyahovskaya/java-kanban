@@ -205,7 +205,7 @@ public class InMemoryTaskManager implements TaskManager {
 
         // epicId should not be changed/updated
         if (st.getEpicId() != oldSubtask.getEpicId()) {
-            st = new Subtask(st.getId(), oldSubtask.getEpicId(), st.getTitle(), st.getDescription(), st.getStatus());
+            st = new Subtask(st.getId(), oldSubtask.getEpicId(), st.getTitle(), st.getDescription(), st.getStatus(), st.getDuration(), st.getStartTime());
         }
 
         subtasks.put(st.getId(), st);
