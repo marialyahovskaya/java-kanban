@@ -3,6 +3,7 @@ package manager;
 import com.google.gson.*;
 import manager.file.FileBackedTaskManager;
 import manager.file.ManagerLoadException;
+import manager.http.HttpTaskManager;
 import manager.memory.InMemoryHistoryManager;
 
 import java.io.File;
@@ -14,11 +15,12 @@ import java.lang.reflect.Type;
 public final class Managers {
 
     private static final String DB_FILENAME = "data/data.txt";
+    private static final String SERVER_URL = "http://localhost:8078";
 
     public static TaskManager getDefault() {
         try {
             TaskManager manager;
-            manager = FileBackedTaskManager.loadFromFile(new File(DB_FILENAME));
+            manager = HttpTaskManager.loadFromServer(SERVER_URL);
             return manager;
         } catch (ManagerLoadException e) {
             System.out.println(e.getMessage());

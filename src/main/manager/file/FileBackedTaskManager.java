@@ -14,13 +14,16 @@ import java.nio.file.InvalidPathException;
 import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager implements TaskManager {
-    private final File file;
+    private File file;
 
-    private FileBackedTaskManager(File file) {
+    public FileBackedTaskManager() {
+    }
+
+    public FileBackedTaskManager(File file) {
         this.file = file;
     }
 
-    private void restoreHistory(List<Integer> history) {
+    protected void restoreHistory(List<Integer> history) {
         for (int id : history) {
             if (tasks.containsKey(id)) getTask(id);
             else if (epics.containsKey(id)) getEpic(id);
@@ -75,7 +78,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         return taskManager;
     }
 
-    private void save() throws ManagerSaveException {
+    protected void save() throws ManagerSaveException {
         try (FileWriter fw = new FileWriter(file)) {
             fw.write(CsvTaskFormatter.CSV_HEADER);
             for (Task t : tasks.values()) {
