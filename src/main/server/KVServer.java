@@ -22,12 +22,12 @@ public class KVServer {
     public KVServer() throws IOException {
         apiToken = generateApiToken();
         server = HttpServer.create(new InetSocketAddress("localhost", PORT), 0);
-        server.createContext("/register", this::register);
-        server.createContext("/save", this::save);
-        server.createContext("/load", this::load);
+        server.createContext("/register", this::handleRegister);
+        server.createContext("/save", this::handleSave);
+        server.createContext("/load", this::handleLoad);
     }
 
-    private void load(HttpExchange h) throws IOException {
+    private void handleLoad(HttpExchange h) throws IOException {
         try {
             System.out.println("\n/load");
 
@@ -60,7 +60,7 @@ public class KVServer {
         }
     }
 
-    private void save(HttpExchange h) throws IOException {
+    private void handleSave(HttpExchange h) throws IOException {
         try {
             System.out.println("\n/save");
             if (!hasAuth(h)) {
@@ -93,7 +93,7 @@ public class KVServer {
         }
     }
 
-    private void register(HttpExchange h) throws IOException {
+    private void handleRegister(HttpExchange h) throws IOException {
         try {
             System.out.println("\n/register");
             if ("GET".equals(h.getRequestMethod())) {
