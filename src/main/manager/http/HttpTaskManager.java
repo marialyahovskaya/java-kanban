@@ -43,6 +43,10 @@ public class HttpTaskManager extends FileBackedTaskManager {
             Type historyType = new TypeToken<ArrayList<Integer>>(){}.getType();
             List<Integer> loadedHistory = gson.fromJson(historyJson, historyType);
 
+            // не надо ничего восстанавливать, если в KVServer нет данных, или они неполные
+            if (loadedTasks == null || loadedEpics == null || loadedSubtasks == null || loadedHistory == null)
+                return taskManager;
+
             loadedTasks.forEach(taskManager::addTask);
             loadedEpics.forEach(taskManager::addTask);
 
