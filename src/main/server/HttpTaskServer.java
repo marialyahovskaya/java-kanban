@@ -35,6 +35,9 @@ public class HttpTaskServer {
         server.createContext("/tasks/subtask", this::routeSubtaskRequests);
     }
 
+    public void stop() {
+        server.stop(0);
+    }
 
     public void routeTaskRequests(HttpExchange httpExchange) throws IOException {
         String method = httpExchange.getRequestMethod();
@@ -410,6 +413,22 @@ public class HttpTaskServer {
         }
         return result;
     }
+
+    public class CreationResponse {
+        private int id;
+
+        public CreationResponse(int id) {
+            this.id = id;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+    }
 }
 
 class ErrorMessage {
@@ -428,18 +447,3 @@ class ErrorMessage {
     }
 }
 
-class CreationResponse {
-    private int id;
-
-    public CreationResponse(int id) {
-        this.id = id;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-}

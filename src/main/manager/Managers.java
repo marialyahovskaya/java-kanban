@@ -1,16 +1,12 @@
 package manager;
 
 import com.google.gson.*;
-import manager.file.FileBackedTaskManager;
 import manager.file.ManagerLoadException;
 import manager.http.HttpTaskManager;
 import manager.memory.InMemoryHistoryManager;
+import util.LocalDateAdapter;
 
-import java.io.File;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.lang.reflect.Type;
-
 
 public final class Managers {
 
@@ -37,18 +33,5 @@ public final class Managers {
                 .setPrettyPrinting()
                 .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
                 .create();
-    }
-}
-
-class LocalDateAdapter implements JsonSerializer<LocalDate>, JsonDeserializer<LocalDate> {
-    @Override
-    public JsonElement serialize(LocalDate date, Type typeOfSrc, JsonSerializationContext context) {
-        return new JsonPrimitive(date.format(DateTimeFormatter.ISO_LOCAL_DATE)); // "yyyy-mm-dd"
-    }
-
-    @Override
-    public LocalDate deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-            throws JsonParseException {
-        return LocalDate.parse(json.getAsString(), DateTimeFormatter.ISO_LOCAL_DATE);
     }
 }
