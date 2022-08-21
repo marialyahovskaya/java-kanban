@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -387,6 +388,23 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(10, subtask.getDuration());
         assertEquals(LocalDate.of(2022, 8, 7), subtask.getStartTime());
         assertEquals(epic1Id, subtask.getEpicId()); // epicId should not be changed
+
+        // также проверим, что сабтаск поменялся и в эпике тоже
+        Optional<Subtask> subtaskInEpic = manager.getEpic(epic1Id).getSubtasks()
+                .stream()
+                .filter(st -> st.getId() == subtaskId)
+                .findFirst();
+
+        assertEquals(true, subtaskInEpic.isPresent());
+        subtask = subtaskInEpic.get();
+        assertEquals("помывка кота", subtask.getTitle());
+        assertEquals("помыть кота с шампунем", subtask.getDescription());
+        assertEquals(TaskStatus.DONE, subtask.getStatus());
+        assertEquals(TaskType.SUBTASK, subtask.getType());
+        assertEquals(10, subtask.getDuration());
+        assertEquals(LocalDate.of(2022, 8, 7), subtask.getStartTime());
+        assertEquals(epic1Id, subtask.getEpicId()); // epicId should not be changed
+
     }
 
     @Test

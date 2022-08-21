@@ -269,7 +269,7 @@ public class InMemoryTaskManager implements TaskManager {
         subtasks.put(id, st);
 
         Epic epic = epics.get(st.getEpicId());
-        epic.getSubtasks().stream().filter(s -> s.getId() == id).forEach(epic.getSubtasks()::remove);
+        epic.getSubtasks().remove(oldSubtask);
         epic.getSubtasks().add(st);
 
         epic.recalculateData();
