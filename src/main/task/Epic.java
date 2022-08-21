@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public class Epic extends Task {
 
-    private final ArrayList<Subtask> subtasks;
+    private ArrayList<Subtask> subtasks;
 
     public Epic(Integer id, String title, String description, TaskStatus status, LocalDate startTime) {
         super(id, title, description, status, 0, startTime);
@@ -17,6 +17,10 @@ public class Epic extends Task {
 
     public ArrayList<Subtask> getSubtasks() {
         return subtasks;
+    }
+
+    public void setSubtasks(ArrayList<Subtask> subtasks) {
+        this.subtasks = subtasks;
     }
 
     public void recalculateData() {

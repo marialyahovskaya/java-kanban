@@ -28,8 +28,7 @@ public class InMemoryTaskManager implements TaskManager {
             // не должно быть пересечений длительности выполнения кроме случая сверки задачи с самой собой
             if (LocalDateTime.of(t.getStartTime(), LocalTime.of(0, 0)).isBefore(task.getEndTime()) &&
                     LocalDateTime.of(task.getStartTime(), LocalTime.of(0, 0)).isBefore(t.getEndTime()) &&
-                    !t.getId().equals(task.getId()))
-            {
+                    !t.getId().equals(task.getId())) {
                 return false;
             }
         }
@@ -63,7 +62,12 @@ public class InMemoryTaskManager implements TaskManager {
 
         switch (task.getType()) {
             case TASK -> tasks.put(taskId, task);
-            case EPIC -> epics.put(taskId, (Epic) task);
+            case EPIC -> {
+                Epic epic = (Epic) task;
+                // if null subtasks provided, should initiate it with an ArrayList
+                if (epic.getSubtasks() == null) epic.setSubtasks(new ArrayList<>());
+                epics.put(taskId, epic);
+            }
             case SUBTASK -> {
                 Subtask subtask = (Subtask) task;
                 subtasks.put(taskId, subtask);
@@ -243,7 +247,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateSubtask(Subtask st) throws StartTimeOverlapException {
-        if (!subtasks.containsKey(st.getId())) {
+        final int id = st.getId();
+
+        if (!subtasks.containsKey(id)) {
             return;
         }
 
@@ -251,26 +257,37 @@ public class InMemoryTaskManager implements TaskManager {
             throw new StartTimeOverlapException("Указанный новый временной слот подзадачи уже занят");
         }
 
-        Subtask oldSubtask = subtasks.get(st.getId());
+        Subtask oldSubtask = subtasks.get(id);
 
         // epicId should not be changed/updated
         if (st.getEpicId() != oldSubtask.getEpicId()) {
-            st = new Subtask(st.getId(), oldSubtask.getEpicId(), st.getTitle(), st.getDescription(), st.getStatus(), st.getDuration(), st.getStartTime());
+            st = new Subtask(id, oldSubtask.getEpicId(), st.getTitle(), st.getDescription(), st.getStatus(), st.getDuration(), st.getStartTime());
         }
 
         priorityIndex.remove(oldSubtask);
         priorityIndex.add(st);
-        subtasks.put(st.getId(), st);
+        subtasks.put(id, st);
 
         Epic epic = epics.get(st.getEpicId());
+        epic.getSubtasks().stream().filter(s -> s.getId() == id).forEach(epic.getSubtasks()::remove);
+        epic.getSubtasks().add(st);
+
         epic.recalculateData();
     }
 
     @Override
     public void updateEpic(Epic epic) {
-        if (epics.containsKey(epic.getId())) {
-            epics.put(epic.getId(), epic);
+        if (!epics.containsKey(epic.getId())) {
+            return;
         }
+        Epic oldEpic = epics.get(epic.getId());
+
+        // should not change subtasks if new subtask collection is null
+        if (epic.getSubtasks() == null) {
+            epic.setSubtasks(oldEpic.getSubtasks());
+        }
+
+        epics.put(epic.getId(), epic);
     }
 
     @Override
