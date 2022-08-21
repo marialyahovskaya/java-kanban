@@ -17,7 +17,7 @@ import java.util.List;
 
 public class HttpTaskManager extends FileBackedTaskManager {
     private static KVClient client;
-    private static final Gson gson  = Managers.getGson();
+    private static final Gson gson = Managers.getGson();
 
     public HttpTaskManager(String url) throws IOException, InterruptedException {
         client = new KVClient(url);
@@ -28,19 +28,23 @@ public class HttpTaskManager extends FileBackedTaskManager {
             final HttpTaskManager taskManager = new HttpTaskManager(url);
 
             String tasksJson = client.load("tasks");
-            Type taskListType = new TypeToken<ArrayList<Task>>(){}.getType();
+            Type taskListType = new TypeToken<ArrayList<Task>>() {
+            }.getType();
             List<Task> loadedTasks = gson.fromJson(tasksJson, taskListType);
 
             String epicsJson = client.load("epics");
-            Type epicListType = new TypeToken<ArrayList<Epic>>(){}.getType();
+            Type epicListType = new TypeToken<ArrayList<Epic>>() {
+            }.getType();
             List<Epic> loadedEpics = gson.fromJson(epicsJson, epicListType);
 
             String subtasksJson = client.load("subtasks");
-            Type subtaskListType = new TypeToken<ArrayList<Subtask>>(){}.getType();
+            Type subtaskListType = new TypeToken<ArrayList<Subtask>>() {
+            }.getType();
             List<Subtask> loadedSubtasks = gson.fromJson(subtasksJson, subtaskListType);
 
             String historyJson = client.load("history");
-            Type historyType = new TypeToken<ArrayList<Integer>>(){}.getType();
+            Type historyType = new TypeToken<ArrayList<Integer>>() {
+            }.getType();
             List<Integer> loadedHistory = gson.fromJson(historyJson, historyType);
 
             // не надо ничего восстанавливать, если в KVServer нет данных, или они неполные
@@ -61,7 +65,7 @@ public class HttpTaskManager extends FileBackedTaskManager {
             taskManager.restoreHistory(loadedHistory);
 
             return taskManager;
-        } catch (IOException | InterruptedException e ) {
+        } catch (IOException | InterruptedException e) {
             System.out.println("Ошибка при создании HttpTaskManager - " + e.getMessage());
             throw new ManagerLoadException(e.getMessage());
         }

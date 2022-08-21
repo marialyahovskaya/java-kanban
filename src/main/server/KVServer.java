@@ -27,6 +27,10 @@ public class KVServer {
         server.createContext("/load", this::handleLoad);
     }
 
+    public void stop() {
+        server.stop(0);
+    }
+
     private void handleLoad(HttpExchange h) throws IOException {
         try {
             System.out.println("\n/load");
