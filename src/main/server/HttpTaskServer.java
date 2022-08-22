@@ -414,7 +414,7 @@ public class HttpTaskServer {
         return result;
     }
 
-    public class CreationResponse {
+    public static class CreationResponse {
         private int id;
 
         public CreationResponse(int id) {

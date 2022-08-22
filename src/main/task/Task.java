@@ -94,8 +94,7 @@ public class Task implements Comparable<Task> {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Task)) return false;
-        Task task = (Task) o;
+        if (!(o instanceof Task task)) return false;
         return Objects.equals(id, task.id)
                 && Objects.equals(title, task.title)
                 && Objects.equals(description, task.description)

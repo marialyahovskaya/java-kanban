@@ -395,7 +395,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
                 .filter(st -> st.getId() == subtaskId)
                 .findFirst();
 
-        assertEquals(true, subtaskInEpic.isPresent());
+        assertTrue(subtaskInEpic.isPresent());
         subtask = subtaskInEpic.get();
         assertEquals("помывка кота", subtask.getTitle());
         assertEquals("помыть кота с шампунем", subtask.getDescription());

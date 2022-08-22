@@ -1,6 +1,5 @@
 package manager.file;
 
-import manager.TaskManager;
 import manager.memory.InMemoryTaskManager;
 import task.Epic;
 import task.Subtask;
@@ -13,7 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.util.List;
 
-public class FileBackedTaskManager extends InMemoryTaskManager implements TaskManager {
+public class FileBackedTaskManager extends InMemoryTaskManager {
     private File file;
 
     public FileBackedTaskManager() {

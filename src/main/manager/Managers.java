@@ -10,7 +10,6 @@ import java.time.LocalDate;
 
 public final class Managers {
 
-    private static final String DB_FILENAME = "data/data.txt";
     private static final String SERVER_URL = "http://localhost:8078";
 
     public static TaskManager getDefault() {
