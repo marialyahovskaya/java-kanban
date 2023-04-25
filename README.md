@@ -1,2 +1,5 @@
-# java-kanban
-Repository for homework project.
+# Kanban
+
+Таск-менеджер для управления задачами и сроками.
+
+Java 8.
